@@ -9,21 +9,29 @@ from unittest.mock import patch, Mock
 from parameterized import parameterized_class
 from client import GithubOrgClient
 
+
 class TestGithubOrgClient(unittest.TestCase):
     """
     Test case for the GithubOrgClient class.
     """
 
-    @parameterized_class(("org_payload", "repos_payload", "expected_repos", "apache2_repos"),
-                         [(None, None, None, None)],
-                         indirect=True)
+    @parameterized_class(
+        ("org_payload", "repos_payload", "expected_repos", "apache2_repos"),
+        [(None, None, None, None)],
+        indirect=True)
     class IntegrationGithubOrgClient(unittest.TestCase):
         """
         Integration test case for the GithubOrgClient class.
         """
 
         @classmethod
-        def setUpClass(cls, org_payload, repos_payload, expected_repos, apache2_repos):
+        def setUpClass(
+            cls,
+            org_payload,
+            repos_payload,
+            expected_repos,
+            apache2_repos
+        ):
             """
             Set up fixtures for the integration tests.
             """
@@ -62,6 +70,7 @@ class TestGithubOrgClient(unittest.TestCase):
             client = GithubOrgClient("google")
             repos = client.public_repos("apache-2.0")
             self.assertEqual(repos, self.apache2_repos)
+
 
 if __name__ == "__main__":
     unittest.main()
