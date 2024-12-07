@@ -36,7 +36,3 @@ def fetch_users_with_retry(conn):
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM users")
     return cursor.fetchall()
-
-# Attempt to fetch users with retries
-users = fetch_users_with_retry()
-print(users)

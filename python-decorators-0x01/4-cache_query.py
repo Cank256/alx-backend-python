@@ -35,7 +35,3 @@ def fetch_users_with_cache(conn, query):
     cursor = conn.cursor()
     cursor.execute(query)
     return cursor.fetchall()
-
-# Fetch users with caching
-users = fetch_users_with_cache(query="SELECT * FROM users")
-users_again = fetch_users_with_cache(query="SELECT * FROM users")
