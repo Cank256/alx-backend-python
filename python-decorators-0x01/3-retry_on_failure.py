@@ -1,4 +1,17 @@
 import time
+import sqlite3
+import functools
+
+# Decorator to manage database connection
+def with_db_connection(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        conn = sqlite3.connect('example.db')
+        try:
+            return func(conn, *args, **kwargs)
+        finally:
+            conn.close()
+    return wrapper
 
 # Decorator to retry on failure
 def retry_on_failure(retries=3, delay=2):
@@ -13,7 +26,7 @@ def retry_on_failure(retries=3, delay=2):
                     print(f"Error: {e}. Retrying in {delay} seconds...")
                     attempts += 1
                     time.sleep(delay)
-            raise Exception("Max retries reached.")
+            raise sqlite3.OperationalError("Max retries reached.")
         return wrapper
     return decorator
 

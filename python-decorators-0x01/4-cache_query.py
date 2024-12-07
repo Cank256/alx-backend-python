@@ -1,3 +1,17 @@
+import sqlite3
+import functools
+
+# Decorator to manage database connection
+def with_db_connection(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        conn = sqlite3.connect('example.db')
+        try:
+            return func(conn, *args, **kwargs)
+        finally:
+            conn.close()
+    return wrapper
+
 # Query cache
 query_cache = {}
 
