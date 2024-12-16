@@ -75,28 +75,67 @@ class TestGetJson(unittest.TestCase):
 
 class TestMemoize(unittest.TestCase):
     """
-    Tests the memoize decorator.
+    Unit tests for the `memoize` decorator.
+
+    The `memoize` decorator is used to cache the result of a method call.
+    When the decorated method is accessed multiple times, the cached result
+    is returned instead of recalculating the result.
     """
 
     def test_memoize(self):
-        """Test memoize works as expected."""
+        """
+        Test that the `memoize` decorator caches the result of a method call.
+
+        The test verifies the following:
+        - The decorated method is executed only once, even when accessed
+        multiple times.
+        - The cached value is returned on subsequent accesses, without
+        calling the original method again.
+
+        A mock object is used to track calls to the original method.
+        """
         class TestClass:
+            """
+            A test class to demonstrate the `memoize` decorator.
+
+            Attributes:
+                a_method: A regular method that returns a fixed value.
+                a_property: A property decorated with `memoize` that calls
+                            `a_method`.
+            """
+
             def a_method(self):
+                """
+                A simple method to return a fixed value.
+
+                Returns:
+                    int: The fixed value 42.
+                """
                 return 42
 
             @memoize
             def a_property(self):
                 """
-                A memoized property that calls `a_method` and
-                caches the result.
+                A memoized property that calls `a_method` and caches the result
+
+                Returns:
+                    int: The result of calling `a_method`, cached after the
+                    first call.
                 """
                 return self.a_method()
 
+        # Use a mock to track calls to the `a_method`.
         with patch.object(TestClass, 'a_method', return_value=42)
         as mock_method:
             obj = TestClass()
+
+            # Assert that the first access to `a_property` calls `a_method`.
             self.assertEqual(obj.a_property, 42)
+
+            # Assert that subsequent accesses do not call `a_method` again.
             self.assertEqual(obj.a_property, 42)
+
+            # Verify that `a_method` was only called once due to memoization.
             mock_method.assert_called_once()
 
 
