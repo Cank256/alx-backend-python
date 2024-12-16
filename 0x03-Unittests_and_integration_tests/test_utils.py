@@ -12,39 +12,40 @@ from functools import wraps
 
 
 class TestAccessNestedMap(unittest.TestCase):
-    """
-    Test case for the access_nested_map function.
-    """
+    """Test cases for access_nested_map function."""
 
     @parameterized.expand([
         ({"a": 1}, ("a",), 1),
         ({"a": {"b": 2}}, ("a",), {"b": 2}),
-        ({"a": {"b": 2}}, ("a", "b"), 2)
+        ({"a": {"b": 2}}, ("a", "b"), 2),
     ])
     def test_access_nested_map(self, nested_map, path, expected):
         """
-        Test the access_nested_map function.
+        Test that access_nested_map returns the correct value.
+
+        Args:
+            nested_map: The dictionary to traverse.
+            path: The keys to traverse through the dictionary.
+            expected: The expected value.
         """
-        result = access_nested_map(nested_map, path)
-        self.assertEqual(result, expected)
+        self.assertEqual(access_nested_map(nested_map, path), expected)
 
     @parameterized.expand([
         ({}, ("a",), "a"),
-        ({"a": 1}, ("a", "b"), "b")
+        ({"a": 1}, ("a", "b"), "b"),
     ])
-    def test_access_nested_map_exception(
-        self,
-        nested_map,
-        path,
-        expected_exception
-    ):
+    def test_access_nested_map_exception(self, nested_map, path, expected_error_key):
         """
-        Test that access_nested_map raises a KeyError when expected.
-        """
-        with self.assertRaises(keyError) as context:
-            access_nested_map(nested_map, path)
-        self.assertEqual(str(context.exception), "Key not found")
+        Test that access_nested_map raises KeyError when key is not found.
 
+        Args:
+            nested_map: The dictionary to traverse.
+            path: The keys to traverse through the dictionary.
+            expected_error_key: The missing key expected to raise the error.
+        """
+        with self.assertRaises(KeyError) as context:
+            access_nested_map(nested_map, path)
+        self.assertEqual(str(context.exception), f"'{expected_error_key}'")
 
 class TestGetJson(unittest.TestCase):
     """
