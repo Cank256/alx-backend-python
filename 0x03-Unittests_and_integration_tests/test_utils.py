@@ -75,42 +75,25 @@ class TestGetJson(unittest.TestCase):
 
 class TestMemoize(unittest.TestCase):
     """
-    Test case for the memoize decorator.
+    Tests the memoize decorator.
     """
 
-    class TestClass:
-        """
-        Test class with memoized method.
-        """
-
-        def a_method(self):
-            """
-            Test method.
-            """
-            return 42
-
-        @memoize
-        def a_property(self):
-            """
-            Test method with memoization.
-            """
-            return self.a_method()
-
     def test_memoize(self):
-        """
-        Test memoization functionality.
-        """
-        test_instance = self.TestClass()
+        """Test memoize works as expected."""
+        class TestClass:
+            def a_method(self):
+                return 42
 
-        with patch.object(
-            test_instance, "a_method", return_value=42
-        ) as mock_a_method:
-            result1 = test_instance.a_property()
-            result2 = test_instance.a_property()
+            @memoize
+            def a_property(self):
+                return self.a_method()
 
-            mock_a_method.assert_called_once()
-            self.assertEqual(result1, 42)
-            self.assertEqual(result2, 42)
+        with patch.object(TestClass, 'a_method', return_value=42)
+        as mock_method:
+            obj = TestClass()
+            self.assertEqual(obj.a_property, 42)
+            self.assertEqual(obj.a_property, 42)
+            mock_method.assert_called_once()
 
 
 if __name__ == "__main__":
