@@ -7,6 +7,7 @@ class User(AbstractUser):
     email = models.EmailField(unique=True, null=False, blank=False)  # Redefine email for uniqueness
     first_name = models.CharField(max_length=150, blank=False, null=False)
     last_name = models.CharField(max_length=150, blank=False, null=False)
+    password = models.CharField(max_length=150, blank=False, null=False)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     role = models.CharField(
         max_length=10, 
