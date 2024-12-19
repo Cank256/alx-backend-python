@@ -2,20 +2,31 @@ from rest_framework import serializers
 from .models import User, Conversation, Message
 
 class MessageSerializer(serializers.ModelSerializer):
+    sender_name = serializers.SerializerMethodField()  # Add a custom field to display sender's full name
+
     class Meta:
         model = Message
-        fields = '__all__'
+        fields = ['message_id', 'sender', 'sender_name', 'conversation', 'message_body', 'sent_at']
+
+    def get_sender_name(self, obj):
+        return f"{obj.sender.first_name} {obj.sender.last_name}"
+
 
 class ConversationSerializer(serializers.ModelSerializer):
-    messages = MessageSerializer(many=True, read_only=True)
+    participants_names = serializers.SerializerMethodField()  # Add a custom field to display participant names
 
     class Meta:
         model = Conversation
-        fields = ['conversation_id', 'participants', 'messages', 'created_at']
+        fields = ['conversation_id', 'participants', 'participants_names', 'created_at']
+
+    def get_participants_names(self, obj):
+        return [f"{participant.first_name} {participant.last_name}" for participant in obj.participants.all()]
+
 
 class UserSerializer(serializers.ModelSerializer):
-    conversations = ConversationSerializer(many=True, read_only=True)
+    full_name = serializers.SerializerMethodField()  # Add a custom field to display the user's full name
+    role = serializers.CharField(required=True)  # Explicitly define role as a CharField for validation
 
     class Meta:
         model = User
-        fields = ['user_id', 'username', 'email', 'phone_number', 'role', 'conversations']
+        fields = ['user_id', 'email', 'first_name', 'last_name', 'full_name', 'phone_number', 'role', 'created_at']
